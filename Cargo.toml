@@ -1,0 +1,14 @@
+[package]
+name = "imapcacheproxy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+tokio-imap = "0.5.0"
+imap = "2.3.0"
+chrono = "0.4.22"
