@@ -12,3 +12,7 @@ tokio = { version = "1", features = ["full"] }
 tokio-imap = "0.5.0"
 imap = "2.3.0"
 chrono = "0.4.22"
+# imap = "0.13" #  Replace with the latest version after checking crates.io
+
+
+
