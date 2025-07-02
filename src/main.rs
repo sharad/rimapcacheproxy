@@ -1,3 +1,6 @@
+
+
+
 use clap::Parser;
 use tokio::net::{TcpListener, TcpStream};
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
@@ -5,24 +8,6 @@ use tokio_native_tls::TlsConnector;
 use native_tls::TlsConnector as NativeTlsConnector;
 use tokio_native_tls::TlsStream;
 use anyhow::Result;
-
-
-// #[derive(Parser, Debug)]
-// #[command(author, version, about = "IMAP Proxy with TLS/plain upstream")]
-// struct Args {
-//     /// Address to listen on (e.g., 127.0.0.1:1143)
-//     #[arg(short, long)]
-//     proxy_addr: String,
-
-//     /// Upstream IMAP server address (e.g., imap.gmail.com:993)
-//     #[arg(short, long)]
-//     upstream_addr: String,
-
-//     /// Use TLS for upstream connection
-//     #[arg(long)]
-//     tls: bool,
-// }
-
 
 #[derive(Parser, Debug)]
 #[command(author, version, about = "IMAP Proxy with TLS/plain upstream")]
@@ -64,12 +49,6 @@ impl Upstream {
 #[tokio::main]
 async fn main() -> Result<()> {
     env_logger::init();
-
-    // let proxy_addr = "127.0.0.1:1143";
-    // let upstream_addr = "imap.gmail.com:993";
-    // let use_tls = true;
-
-
     let args = Args::parse();
     let proxy_addr = args.proxy_addr;
     let upstream_addr = args.upstream_addr;
@@ -105,27 +84,13 @@ async fn handle_connection(client: TcpStream, upstream_addr: &str, use_tls: bool
         Upstream::Plain(upstream_tcp)
     };
 
-    let (mut client_read, mut client_write) = client.into_split();
-
 
     // let (mut upstream_read, mut upstream_write): (
     //     Box<dyn AsyncRead + Send + Unpin>,
     //     Box<dyn AsyncWrite + Send + Unpin>
-    // ) = match upstream {
-    //     Upstream::Plain(s) => {
-    //         let (r, w) = tokio::io::split(s);
-    //         (Box::new(r), Box::new(w))
-    //     },
-    //     Upstream::Tls(s) => {
-    //         let (r, w) = tokio::io::split(s);
-    //         (Box::new(r), Box::new(w))
-    //     }
-    // };
-
-    let (mut upstream_read, mut upstream_write): (
-        Box<dyn AsyncRead + Send + Unpin>,
-        Box<dyn AsyncWrite + Send + Unpin>
-    ) = upstream.split();
+    // ) = upstream.split();
+    let (mut client_read, mut client_write) = client.into_split();
+    let (mut upstream_read, mut upstream_write) = upstream.split();
 
     let c2u = tokio::spawn(async move {
         let mut buf = [0u8; 4096];
